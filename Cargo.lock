@@ -4,4 +4,4 @@ version = 3
 
 [[package]]
 name = "deno_core_icudata"
-version = "0.0.73"
+version = "0.74.0"
