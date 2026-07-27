@@ -39,11 +39,15 @@ trap 'exit 1' HUP INT TERM
 items="$work_dir/items.txt"
 remove="$work_dir/remove.txt"
 output="$work_dir/icudtl.dat"
-remove_pattern='\.cnv$|^cnvalias\.icu$|^uts46\.nrm$|^confusables\.cfu$|^translit/'
+remove_pattern='\.cnv$|^cnvalias\.icu$|^uts46\.nrm$|^confusables\.cfu$'
+remove_pattern="$remove_pattern|^translit/|^rbnf/|^nfkc_scf\\.nrm$"
+remove_pattern="$remove_pattern|^ulayout\\.icu$|^currencyNumericCodes\\.res$"
+remove_pattern="$remove_pattern|^genderList\\.res$|^windowsZones\\.res$"
+remove_pattern="$remove_pattern|^icuver\\.res$|^icustd\\.res$"
 
 "$icupkg" --ignore-deps --auto_toc_prefix -l -o "$items" "$input"
 if ! grep -E "$remove_pattern" "$items" > "$remove"; then
-  echo "error: no Blink-only ICU data found in $input" >&2
+  echo "error: no V8-unused ICU data found in $input" >&2
   exit 1
 fi
 
@@ -58,5 +62,5 @@ cp "$output" "$destination"
 
 removed_count=$(wc -l < "$remove" | tr -d '[:space:]')
 output_size=$(wc -c < "$destination" | tr -d '[:space:]')
-echo "Removed $removed_count Blink-only items."
+echo "Removed $removed_count V8-unused items."
 echo "Wrote $destination ($output_size bytes)."
